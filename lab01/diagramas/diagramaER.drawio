@@ -259,8 +259,8 @@
             <mxRectangle height="30" width="150" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eUn8U0MhkNrtrmTf1tv8-50" parent="1" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;whiteSpace=wrap;html=1;align=center;" value="comment" vertex="1">
-          <mxGeometry height="30" width="80" x="380" y="95" as="geometry" />
+        <mxCell id="eUn8U0MhkNrtrmTf1tv8-50" parent="1" style="text;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=12;whiteSpace=wrap;html=1;align=center;" value="short_comment" vertex="1">
+          <mxGeometry height="30" width="110" x="376" y="95" as="geometry" />
         </mxCell>
         <mxCell id="eUn8U0MhkNrtrmTf1tv8-107" edge="1" parent="1" source="eUn8U0MhkNrtrmTf1tv8-95" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;endArrow=none;endFill=0;" target="eUn8U0MhkNrtrmTf1tv8-36">
           <mxGeometry relative="1" as="geometry" />
