@@ -302,7 +302,7 @@
           <mxGeometry height="30" width="50" x="700" y="-100" as="geometry" />
         </mxCell>
         <mxCell id="eUn8U0MhkNrtrmTf1tv8-124" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;" value="Genre" vertex="1">
-          <mxGeometry height="90" width="180" x="480" y="410" as="geometry" />
+          <mxGeometry height="90" width="180" x="480" y="376" as="geometry" />
         </mxCell>
         <mxCell id="eUn8U0MhkNrtrmTf1tv8-125" parent="eUn8U0MhkNrtrmTf1tv8-124" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;" value="" vertex="1">
           <mxGeometry height="30" width="180" y="30" as="geometry" />
@@ -343,7 +343,7 @@
           <mxGeometry height="30" width="30" x="563" y="256" as="geometry" />
         </mxCell>
         <mxCell id="eUn8U0MhkNrtrmTf1tv8-141" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="M" vertex="1">
-          <mxGeometry height="30" width="30" x="563" y="384" as="geometry" />
+          <mxGeometry height="30" width="30" x="563" y="350" as="geometry" />
         </mxCell>
         <mxCell id="eUn8U0MhkNrtrmTf1tv8-145" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="N" vertex="1">
           <mxGeometry height="30" width="30" x="272" y="131" as="geometry" />
