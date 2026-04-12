@@ -1,0 +1,153 @@
+INSERT INTO grades (id_user, id_movie, grade_date, grade, short_comment)
+VALUES (0, 2, '2026-04-10', 9, 'sim.')
+
+INSERT INTO categorized (id_movie, id_genre)
+VALUES (0, 0)
+
+INSERT INTO acts (id_movie, id_crew_member, movie_role)
+VALUES (0, 0, 'Ryland Grace')
+
+INSERT INTO app_user (id_user, username, image_link, birthdate)
+VALUES (1, 'destroyer5237', 'test_link', '2001-03-17')
+
+INSERT INTO movie (id_movie, title, duration, release_date, poster_link)
+VALUES (3, 'White Chicks', 109, '2004-06-23', 'link_test')
+
+INSERT INTO genre (id_genre, genre_name)
+VALUES(0, 'Sci-Fi')
+
+INSERT INTO crew_member (id_crew_member, real_name, artistic_name, birthdate, picture_link)
+VALUES (0, 'Ryan Thomas Gosling', 'Ryan Gosling', '1980-11-12', 'test_link')
+
+
+
+
+CREATE OR REPLACE PROCEDURE pr_sync_all_averages()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE movie m SET average_grade = (SELECT AVG(grade) FROM grades WHERE id_movie = m.id_movie);
+    
+    UPDATE app_user u SET average_given_grade = (SELECT AVG(grade) FROM grades WHERE id_user = u.id_user);
+    
+    UPDATE crew_member c SET average_movies_grade = (
+        SELECT AVG(m.average_grade)
+        FROM movie m
+        WHERE m.id_movie IN (
+            SELECT id_movie FROM acts WHERE id_crew_member = c.id_crew_member
+            UNION
+            SELECT id_movie FROM directs WHERE id_crew_member = c.id_crew_member
+        )
+    );
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION fn_update_crew_average()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE crew_member
+    SET average_movies_grade = (
+        SELECT AVG(m.average_grade)
+        FROM movie m
+        WHERE m.id_movie IN (
+            SELECT id_movie FROM acts WHERE id_crew_member = COALESCE(NEW.id_crew_member, OLD.id_crew_member)
+            UNION
+            SELECT id_movie FROM directs WHERE id_crew_member = COALESCE(NEW.id_crew_member, OLD.id_crew_member)
+        )
+    )
+    WHERE id_crew_member = COALESCE(NEW.id_crew_member, OLD.id_crew_member);
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_update_crew_member_acts
+AFTER INSERT OR UPDATE OR DELETE ON acts
+FOR EACH ROW
+EXECUTE FUNCTION fn_update_crew_average();
+
+CREATE TRIGGER trg_update_crew_member_directs
+AFTER INSERT OR UPDATE OR DELETE ON directs
+FOR EACH ROW
+EXECUTE FUNCTION fn_update_crew_average();
+
+SELECT *
+FROM movie m
+WHERE m.id_movie IN (
+    SELECT id_movie FROM categorized WHERE 
+)
+
+SELECT id_movie FROM categorized WHERE id_genre = (
+    SELECT id_genre FROM genre WHERE genre_name = 'Sci-Fi'
+)
+
+SELECT * FROM movie WHERE id_movie IN (
+    SELECT id_movie FROM categorized WHERE id_genre IN (
+        SELECT id_genre FROM genre WHERE genre_name = 'Sci-Fi'
+    )
+)
+
+SELECT title FROM movie WHERE id_movie IN (
+    SELECT id_movie FROM acts WHERE id_crew_member IN (
+        SELECT id_crew_member FROM crew_member WHERE artistic_name = 'Ryan Gosling'
+    )
+)
+
+SELECT title FROM movie WHERE id_movie IN (
+    SELECT id_movie FROM directs WHERE id_crew_member IN (
+        SELECT id_crew_member FROM crew_member WHERE artistic_name = 'Quentin Tarantino'
+    )
+)
+
+CREATE OR REPLACE FUNCTION fn_update_averages()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE movie
+    SET average_grade = (
+        SELECT AVG(grade)
+        FROM grades
+        WHERE id_movie = COALESCE(NEW.id_movie, OLD.id_movie)
+    )
+    WHERE id_movie = COALESCE(NEW.id_movie, OLD.id_movie);
+
+    UPDATE app_user
+    SET average_given_grade = (
+        SELECT AVG(grade) 
+        FROM grades
+        WHERE id_user = COALESCE(NEW.id_user, OLD.id_user)
+    )
+    WHERE id_user = COALESCE(NEW.id_user, OLD.id_user);
+
+    UPDATE crew_member
+    SET average_movies_grade = (
+        SELECT AVG(m.average_grade)
+        FROM movie m
+        WHERE m.id_movie IN (
+            SELECT id_movie FROM acts WHERE id_crew_member = crew_member.id_crew_member
+            UNION
+            SELECT id_movie FROM directs WHERE id_crew_member = crew_member.id_crew_member
+        )
+    )
+    WHERE id_crew_member IN (
+        SELECT id_crew_member FROM acts WHERE id_movie = COALESCE(NEW.id_movie, OLD.id_movie)
+        UNION
+        SELECT id_crew_member FROM directs WHERE id_movie = COALESCE(NEW.id_movie, OLD.id_movie)
+    );
+
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_update_averages_grades ON grades;
+CREATE TRIGGER trg_update_grades_changes
+AFTER INSERT OR UPDATE OR DELETE ON grades
+FOR EACH ROW
+EXECUTE FUNCTION fn_update_averages();
+
+ALTER TABLE grades
+DROP CONSTRAINT IF EXISTS grades_id_user_fkey;
+ALTER TABLE grades
+ADD CONSTRAINT grades_id_user_fkey
+FOREIGN KEY (id_user)
+REFERENCES app_user(id_user)
+ON DELETE CASCADE;
