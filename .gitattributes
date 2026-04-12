@@ -1,0 +1,5 @@
+# Detects .sql and .plpgsql as SQL
+*.sql linguist-language=SQL
+*.sql linguist-detectable=true
+*.plpgsql linguist-language=SQL
+*.plpgsql linguist-detectable=true
